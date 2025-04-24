@@ -50,9 +50,9 @@
 #define  ILI9341_VSYNC            ((uint32_t)1)   /* Vertical synchronization   */
 #define  ILI9341_VBP              ((uint32_t)3)    /* Vertical back porch        */
 #define  ILI9341_VFP              ((uint32_t)2)    /* Vertical front porch       */
-#define  LCD_PIXEL_WIDTH    ((uint16_t)240)
-#define  LCD_PIXEL_HEIGHT   ((uint16_t)320)
-#define  LCD_PIXELS		     ((uint32_t)LCD_PIXEL_WIDTH * (uint32_t)LCD_PIXEL_HEIGHT)
+#define  LCD_PIXEL_WIDTH          ((uint16_t)240)
+#define  LCD_PIXEL_HEIGHT         ((uint16_t)320)
+#define  LCD_PIXELS		            ((uint32_t)LCD_PIXEL_WIDTH * (uint32_t)LCD_PIXEL_HEIGHT)
 
 void LTCD__Init(void);
 void LTCD_Layer_Init(uint8_t LayerIndex);

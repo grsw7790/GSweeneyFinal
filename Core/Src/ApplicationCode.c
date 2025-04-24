@@ -5,12 +5,17 @@
  *      Author: Xavion
  */
 
-#include "ApplicationCode.h"
+#include <ApplicationCode.h>
 
 /* Static variables */
 
 
 extern void initialise_monitor_handles(void); 
+
+AppDispBoard(uint8_t board[][])
+{
+	displayBoard(board);
+}
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
 static STMPE811_TouchData StaticTouchData;
