@@ -53,6 +53,9 @@
 #define  LCD_PIXEL_WIDTH          ((uint16_t)240)
 #define  LCD_PIXEL_HEIGHT         ((uint16_t)320)
 #define  LCD_PIXELS		            ((uint32_t)LCD_PIXEL_WIDTH * (uint32_t)LCD_PIXEL_HEIGHT)
+// new macros
+#define  HALF_HEIGHT              ((uint16_t)(LCD_PIXEL_HEIGHT / 2))
+#define  HALF_WIDTH               ((uint16_t)(LCD_PIXEL_WIDTH / 2))
 
 void LTCD__Init(void);
 void LTCD_Layer_Init(uint8_t LayerIndex);
@@ -88,6 +91,7 @@ void WriteDataToTouchModule(uint8_t RegToWrite, uint8_t writeData);
 
 
 /*        APPLICATION SPECIFIC FUNCTION DECLARATION - PUT YOUR NEWLY CREATED FUNCTIONS HERE       */
-
+void LCD_draw_board();
+void LCD_draw_rect(uint16_t p1[2], uint16_t p2[2], uint16_t color); // (x,y) p1 = top left, p2 = bot right
 
 #endif /* INC_LCD_DRIVER_H_ */

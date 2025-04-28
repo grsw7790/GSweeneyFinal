@@ -85,7 +85,7 @@ int main(void)
     {0,0,RED,YELLOW,0,0,0},
     {0,0,YELLOW,RED,0,0,0},
     {0,YELLOW,RED,RED,0,0,0},
-  }
+  };
 
   /* USER CODE BEGIN 1 */
 

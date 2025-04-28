@@ -1,0 +1,5 @@
+../Core/Src/InterruptControl.c:10:7:IRQ_en	16	static
+../Core/Src/InterruptControl.c:13:7:IRQ_dis	16	static
+../Core/Src/InterruptControl.c:16:7:IRQ_clr_PR	16	static
+../Core/Src/InterruptControl.c:19:7:IRQ_set_PR	16	static
+../Core/Src/InterruptControl.c:22:7:IRQ_clr_EXTI	16	static

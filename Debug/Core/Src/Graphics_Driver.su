@@ -1,0 +1,4 @@
+../Core/Src/Graphics_Driver.c:12:6:displayPiece	16	static
+../Core/Src/Graphics_Driver.c:15:6:displayBoard	24	static
+../Core/Src/Graphics_Driver.c:34:6:displayStart	4	static
+../Core/Src/Graphics_Driver.c:39:6:displayEnd	4	static

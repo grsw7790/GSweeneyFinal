@@ -7,7 +7,7 @@
 
 #include <Gameplay_Driver.h>
 
-void move(uint8_t col_full[], uint8_t board[][], uint8_t color, uint8_t col)
+void move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t color, uint8_t col) // we have to call 2d array differently
 {
     for(int i = COL_INDICIES; i > ZERO; i--)
     {
@@ -21,15 +21,15 @@ void move(uint8_t col_full[], uint8_t board[][], uint8_t color, uint8_t col)
     displayBoard(board);
 }
 
-bool check_win(uint8_t board[][], uint8_t color)
+bool check_win(uint8_t board[][NUM_COL], uint8_t color)
 {
     // Check Horizontal
     for(int i = ZERO; i < COL_INDICIES-FOR_ADJ; i++)
     {
         for(int j = ZERO; j < ROW_INDICIES; j++)
         {
-            if(board[i][j] == color && board[i][j+1] == color && board[i][j+2] == color board[i][j+3] == color) // 4 in a row cond
-                return true
+            if(board[i][j] == color && board[i][j+1] == color && board[i][j+2] == color && board[i][j+3] == color) // 4 in a row cond
+                return true;
         }
     }
 
@@ -64,10 +64,10 @@ bool check_win(uint8_t board[][], uint8_t color)
     }
 }
 
-bool check_valid_move(uint8_t col_full[], uint8_t col)
+bool check_valid_move(uint8_t col_full[NUM_COL], uint8_t col)
 {
     if(col_full[col] == FULL)
-        return FALSE;
+        return false;
     else
-        return TRUE;
+        return true;
 }

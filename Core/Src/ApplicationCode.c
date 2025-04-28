@@ -12,7 +12,7 @@
 
 extern void initialise_monitor_handles(void); 
 
-AppDispBoard(uint8_t board[][])
+void AppDispBoard(uint8_t board[NUM_ROW][NUM_COL])
 {
 	displayBoard(board);
 }

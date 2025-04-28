@@ -198,7 +198,6 @@ void LTCD__Init(void)
 
 /* START Draw functions */
 
-
 /*
  * This is really the only function needed.
  * All drawing consists of is manipulating the array.
@@ -207,6 +206,32 @@ void LTCD__Init(void)
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color)
 {
 	frameBuffer[y*LCD_PIXEL_WIDTH+x] = color;  //You cannot do x*y to set the pixel.
+}
+
+void LCD_draw_board()
+{
+	// this will draw the full blue rectangle for the board
+  for(int i = 1; i < 238; i++)
+  {
+      for(int j = 0; j < 238; j++)
+      {
+          LCD_Draw_Pixel(i, j, LCD_COLOR_BLUE);
+      }
+  }
+}
+
+void LCD_draw_rect(uint16_t p1[2], uint16_t p2[2], uint16_t color) 
+{
+  uint16_t x_range = p2[0] - p1[0];
+  uint16_t y_range = p1[1] - p2[1];
+
+  for(int x = p1[0]; x < x_range; x++)
+    {
+        for(int y = p1[1]; y > y_range; y--)
+        {
+            LCD_Draw_Pixel(x, y, color);
+        }
+    }
 }
 
 /*

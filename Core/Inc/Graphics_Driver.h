@@ -27,10 +27,15 @@
 #define DISP_ADD        (DISP_MULT / 2)  
 #define TOP             6   // outside our max rows indicies of the actual board
 #define RADIUS          15  // may use whatever <= 17
+#define RED_WIN         0
+#define YELLOW_WIN      1
+#define TIE             2
 
-void displayBoard(uint8_t board[][]);
-void diplayPiece(uint8_t row, uint8_t col, uint16_t color);
+void displayBoard(uint8_t board[][NUM_COL]);
+void displayPiece(uint8_t row, uint8_t col, uint16_t color);
+void startHelper();
 void displayStart();
-void displayEnd();
+void endHelper(char word[], uint16_t color);
+void displayEnd(uint8_t rwywt); // red win yellow win tie (which one)
  
 #endif /* INC_GRAPHICS_DRIVER_H_ */
