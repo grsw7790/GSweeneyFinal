@@ -7,26 +7,30 @@
 
 #include <Graphics_Driver.h>
 
-
+/*
+    TOP LEFT BOARD (x,y) = (0,0)
+    BOTTOM RIGHT BOARD (x,y) = (240,320)
+*/
 // in this func we are shifting right one to center the board
 void displayPiece(uint8_t row, uint8_t col, uint16_t color)
-    {LCD_Draw_Circle_Fill((DISP_MULT * row + DISP_ADD + DISP_ADJ), (DISP_MULT * col + DISP_ADD), RADIUS, color);}
+    {LCD_Draw_Circle_Fill((DISP_MULT * row + DISP_ADD + DISP_ADJ) , (82 + (DISP_MULT * col + DISP_ADD)) , RADIUS, color);}
 
 void displayBoard(uint8_t board[][NUM_COL])
 {
-    LCD_draw_board();
+    LCD_Clear(ZERO, LCD_COLOR_BLACK);
+    LCD_draw_board(); // needs work
     
     // this will draw all the circles necessary
-    for(uint8_t i = ZERO; i < ROW_INDICIES; i++)
+    for(uint8_t y = ZERO; y < NUM_ROW; y++)
     {
-        for(int8_t j = ZERO; j < COL_INDICIES; j++)
+        for(int8_t x = ZERO; x < NUM_COL; x++)
         {
-            if(board[i][j] == RED)
-                displayPiece(i, j, LCD_COLOR_RED);
-            else if(board[i][j] == YELLOW)
-                displayPiece(i, j, LCD_COLOR_YELLOW);
+            if(board[y][x] == RED)
+                displayPiece(x, y, LCD_COLOR_RED);
+            else if(board[y][x] == YELLOW)
+                displayPiece(x, y, LCD_COLOR_YELLOW);
             else
-                displayPiece(i, j, LCD_COLOR_WHITE);
+                displayPiece(x, y, LCD_COLOR_BLACK);
         }
     }
 }
@@ -34,12 +38,12 @@ void displayBoard(uint8_t board[][NUM_COL])
 void startHelper()
 {
     uint16_t top_mid = (uint16_t)(HALF_HEIGHT / 2);
-    uint16_t bot_mid = (uint16_t)(HALF_WIDTH / 2);
+    uint16_t bot_mid = top_mid + (uint16_t)(HALF_HEIGHT);
 
     LCD_SetTextColor(LCD_COLOR_BLACK);
 	LCD_SetFont(&Font16x24);
 
-    LCD_DisplayChar(72,top_mid, 'S');
+    LCD_DisplayChar(82,top_mid, 'S');
 	LCD_DisplayChar(97,top_mid, 'I');
 	LCD_DisplayChar(112,top_mid, 'N');
     // 120
@@ -55,8 +59,8 @@ void startHelper()
 
 void displayStart()
 {
-    uint16_t top_left[2] = {ZERO, HALF_HEIGHT};
-    uint16_t bot_right[2] = {HALF_WIDTH, ZERO};
+    uint16_t top_left[2] = {ZERO, ZERO};
+    uint16_t bot_right[2] = {LCD_PIXEL_WIDTH, HALF_HEIGHT};
 
     // split top and bottom half visually 
     LCD_Clear(ZERO, LCD_COLOR_GREEN);

@@ -1,0 +1,2 @@
+../Core/Src/RNG_Driver.c:10:6:RNG_Init	24	static
+../Core/Src/RNG_Driver.c:16:6:RNG_isDataReady	4	static

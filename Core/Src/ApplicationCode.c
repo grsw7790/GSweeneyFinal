@@ -12,11 +12,6 @@
 
 extern void initialise_monitor_handles(void); 
 
-void AppDispBoard(uint8_t board[NUM_ROW][NUM_COL])
-{
-	displayBoard(board);
-}
-
 #if COMPILE_TOUCH_FUNCTIONS == 1
 static STMPE811_TouchData StaticTouchData;
 #endif // COMPILE_TOUCH_FUNCTIONS
@@ -36,6 +31,45 @@ void ApplicationInit(void)
 	StaticTouchData.orientation = STMPE811_Orientation_Portrait_2;
 
 	#endif // COMPILE_TOUCH_FUNCTIONS
+}
+
+void AppDispBoard(uint8_t board[][NUM_COL])
+	{displayBoard(board);}
+
+void AppRedMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col)
+{
+	move(col_full, board, RED, col);
+	//if(check_win(board, RED) == 1)
+	// {
+	// 		state = GAME_OVER;
+	//		winner = RED;
+	// }
+	//else
+		//state = Y_MOVE;
+}
+
+void AppYellowMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col)
+{
+	move(col_full, board, YELLOW, col);
+	//if(check_win(board, YELLOW) == 1)
+	// {
+	// 		state = GAME_OVER;
+	//		winner = YELLOW;
+	// }
+	//else
+		//state = R_MOVE;
+}
+
+uint32_t AppLCDpoll()
+{
+	/* If touch pressed */
+	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) 
+	{
+		uint32_t touch = (uint16_t)(StaticTouchData.x << 16) + (uint16_t)(StaticTouchData.y);
+		return touch;
+	} 
+	else
+		return 0; // realistically we are never going to touch 0,0 so this shouldnt cause any issues
 }
 
 void LCD_Visual_Demo(void)
@@ -62,3 +96,12 @@ void LCD_Touch_Polling_Demo(void)
 }
 #endif // COMPILE_TOUCH_FUNCTIONS
 
+void EXTI0_IRQHandler()
+{
+	IRQ_dis(EXTI0_IRQ_NUMBER);
+	// if(check_valid_move()) // col_ful array and curr_col var as args
+	// 	addSchedulerEvent(DROP_EVENT); // event should make logic pretty simple to avoid invalid moves
+	IRQ_clr_PR(EXTI0_IRQ_NUMBER);
+	IRQ_clr_EXTI(EXTI0_IRQ_NUMBER);
+	IRQ_en(EXTI0_IRQ_NUMBER);
+}

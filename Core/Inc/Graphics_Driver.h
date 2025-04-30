@@ -13,8 +13,8 @@
 // game board values
 #define NUM_ROW         7               // because the top I will count as a row to display the piece-to-be-dropped
 #define NUM_COL         7
-#define ROW_INDICIES    (NUM_ROW - 1)   // to properly do for loop w/o magic numbers
-#define COL_INDICIES    (NUM_COL - 1)
+#define ROW_INDICIES    (NUM_COL - 1)   
+#define COL_INDICIES    (NUM_ROW - 2) // omit above the board
 #define RED             1
 #define YELLOW          2
 #define WHITE           0
@@ -25,7 +25,7 @@
 
 #define DISP_MULT       34  // got by 240/7 --> top of the board at 238 pixels
 #define DISP_ADD        (DISP_MULT / 2)  
-#define TOP             6   // outside our max rows indicies of the actual board
+#define TOP             1   // row index that will be top of our board, 0 above it
 #define RADIUS          15  // may use whatever <= 17
 #define RED_WIN         0
 #define YELLOW_WIN      1

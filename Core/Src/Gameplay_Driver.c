@@ -9,12 +9,12 @@
 
 void move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t color, uint8_t col) // we have to call 2d array differently
 {
-    for(int i = COL_INDICIES; i > ZERO; i--)
+    for(int i = COL_INDICIES; i > TOP; i--)
     {
         if(board[i][col] == ZERO)
         {
             board[i][col] = color;
-            if(i == ZERO)
+            if(i == TOP)
                 col_full[col] = FULL;
         }
     }

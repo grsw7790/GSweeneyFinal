@@ -17,5 +17,3 @@ extern FONT_t Font12x12;
 
 
 #endif
-
-

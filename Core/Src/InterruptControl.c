@@ -5,7 +5,7 @@
  *      Author: griff
  */
 
- #include <InterruptControl.h>
+#include <InterruptControl.h>
 
  void IRQ_en(uint8_t irq_num)
      {HAL_NVIC_EnableIRQ(irq_num);}
