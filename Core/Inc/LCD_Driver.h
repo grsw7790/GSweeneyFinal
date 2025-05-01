@@ -91,6 +91,7 @@ void WriteDataToTouchModule(uint8_t RegToWrite, uint8_t writeData);
 
 
 /*        APPLICATION SPECIFIC FUNCTION DECLARATION - PUT YOUR NEWLY CREATED FUNCTIONS HERE       */
+
 void LCD_draw_board();
 void LCD_draw_rect(uint16_t p1[2], uint16_t p2[2], uint16_t color); // (x,y) p1 = top left, p2 = bot right
 

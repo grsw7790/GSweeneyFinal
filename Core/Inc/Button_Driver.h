@@ -8,8 +8,7 @@
 #ifndef BUTTON_DRIVER_H_
 #define BUTTON_DRIVER_H_
  
-#include <InterruptControl.h>
-//#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal.h"
 #include "stdbool.h"
  
 #define BUTTON_PIN_NUM		GPIO_PIN_0

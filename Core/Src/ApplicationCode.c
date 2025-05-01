@@ -102,7 +102,7 @@ uint8_t App_AI_Move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL]) // AI m
 
 	// count neighbors for each free move
     uint8_t max_neighbors = 0;
-    uint8_t best_index = 0; // this is the best move given P1 plays best move in middle 1st
+    uint8_t best_index = 2; // making it 2 1st should hopefully lead to more interesting games than 0
     for (uint8_t n = 0; n < num_free; n++)
     {
         uint8_t neighbors = AI_Helper(board, free, n);
@@ -129,45 +129,3 @@ STMPE811_TouchData AppLCDpoll()
 	}
 		 
 }
-
-void LCD_Visual_Demo(void)
-{
-	visualDemo();
-}
-
-#if COMPILE_TOUCH_FUNCTIONS == 1
-void LCD_Touch_Polling_Demo(void)
-{
-	LCD_Clear(0,LCD_COLOR_GREEN);
-	while (1) {
-		/* If touch pressed */
-		if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
-			/* Touch valid */
-			printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
-			LCD_Clear(0, LCD_COLOR_RED);
-		} else {
-			/* Touch not pressed */
-			printf("Not Pressed\n\n");
-			LCD_Clear(0, LCD_COLOR_GREEN);
-		}
-	}
-}
-#endif // COMPILE_TOUCH_FUNCTIONS
-
-// void endis_NVIC_Int(uint8_t irq_num, uint8_t endis)
-// {
-// 	if(endis == ENABLE)
-// 		IRQ_en(irq_num);
-// 	if(endis == DISABLE)
-// 		IRQ_dis(irq_num);
-// }
-
-// //interrupt handler here
-// void EXTI0_IRQHandler()
-// {
-// 	endis_NVIC_Int(EXTI0_IRQ_NUMBER, DISABLE);
-// 	addSchedulerEvent(DROP_EVENT);
-// 	IRQ_clr_PR(EXTI0_IRQ_NUMBER);
-// 	IRQ_clr_EXTI(EXTI0_IRQ_NUMBER);
-// 	endis_NVIC_Int(EXTI0_IRQ_NUMBER, ENABLE);
-// }

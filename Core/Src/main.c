@@ -77,17 +77,12 @@ static void MX_I2C3_Init(void);
   */
 int main(void)
 {
-
   /*
-    NOTES 4/29/25 --> 10:41PM
-      - find a nice way to, at the end of each move, reset the curr_col and display board (prob can j do a reset func in grap_drive)
-      - rn thinking top row reset and reset curr col to correspond with reset row... kinda jank but I think is ok 
-      - maybe we can do it in the AppMove functions respectively -- I think definitely, we can set curr col in this as well - didnt do this, just did it jank
-      
-    NOTES 4/30/25 -->
-      - gotta figure out how to not get several interrupts on one press
-      - above solved. have a fully working scoreboard and 2player mode --> 9:22PM
-      - trying to get RNG to work... might move on to timer in a little bit
+    QUICK NOTES:
+      -> using polling implementation with scheduler
+      -> Single-Player plays against an algorithm that is relatively predictable
+         but its moves depend on player input
+       
   */
   uint8_t board[NUM_ROW][NUM_COL] = { 
   {0,0,0,0,0,0,0},
@@ -109,25 +104,14 @@ int main(void)
   uint8_t temp = 0;     // general temp to use
   uint8_t ai_move;
   uint32_t time;
-  
-  /* USER CODE BEGIN 1 */
-  /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -145,7 +129,6 @@ int main(void)
   while(true){
   if(state == GAME_START)
   {
-    HAL_GetTick();
     // reset board
     for(uint8_t i = ZERO; i < NUM_COL; i++)
     {
@@ -159,7 +142,7 @@ int main(void)
     
     while((touch.x == ZERO) && (touch.y == ZERO))
       {touch = AppLCDpoll();}
-  
+    HAL_GetTick(); // start timer count
     if(touch.y >= HALF_HEIGHT) // this is weird that it works... but it does so im not messing with it
       players = ONE_PLAYER;
     else
@@ -171,7 +154,7 @@ int main(void)
   
   if(state == R_MOVE)////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   {
-    if((getScheduledEvents() & DROP_EVENT) == DROP_EVENT) // this is set by our button interrupt to drop the piece
+    if((getScheduledEvents() & DROP_EVENT) == DROP_EVENT)
     {
       removeSchedulerEvent(DROP_EVENT);
       if(check_valid_move(col_full, curr_col))
@@ -240,7 +223,6 @@ int main(void)
 		      state = GAME_OVER;
 	      else
 		      state = R_MOVE;
-        
       }
     }
     else

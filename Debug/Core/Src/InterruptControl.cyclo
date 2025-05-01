@@ -1,5 +1,0 @@
-../Core/Src/InterruptControl.c:10:7:IRQ_en	1
-../Core/Src/InterruptControl.c:13:7:IRQ_dis	1
-../Core/Src/InterruptControl.c:16:7:IRQ_clr_PR	1
-../Core/Src/InterruptControl.c:19:7:IRQ_set_PR	1
-../Core/Src/InterruptControl.c:22:7:IRQ_clr_EXTI	1

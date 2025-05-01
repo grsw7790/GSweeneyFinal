@@ -101,6 +101,8 @@ void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins, ui
 	LCD_DisplayChar(122,190, 'E');
     LCD_DisplayChar(132,190, ':');
     LCD_DisplayChar(142,190, ((char)time % 10 + ASCII_CONST));
+    time = time - ((time%10) * 10);
+    LCD_DisplayChar(154,190, ((char)time + ASCII_CONST));
 }
 
 void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins, uint32_t time)

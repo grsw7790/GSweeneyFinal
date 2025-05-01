@@ -11,10 +11,10 @@
 #include <LCD_Driver.h>
 
 // game board values
-#define NUM_ROW         7               // because the top I will count as a row to display the piece-to-be-dropped
+#define NUM_ROW         7  // I will count the top as a row to display the piece-to-be-dropped
 #define NUM_COL         7
 #define ROW_INDICIES    (NUM_COL - 1)   
-#define COL_INDICIES    (NUM_ROW - 1) // omit above the board
+#define COL_INDICIES    (NUM_ROW - 1)
 #define RED             1
 #define YELLOW          2
 #define ZERO            0
@@ -37,6 +37,6 @@ void displayPiece(uint8_t row, uint8_t col, uint16_t color);
 void startHelper();
 void displayStart();
 void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins, uint32_t time);
-void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins, uint32_t time); // red win yellow win tie (which one)
+void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins, uint32_t time); // red win yellow win tie (1st arg)
  
 #endif /* INC_GRAPHICS_DRIVER_H_ */
