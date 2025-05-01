@@ -16,9 +16,9 @@
 #define BUTTON_PRESSED		1
 #define BUTTON_UNPRESSED	0
  
- //void ButtonInit();
+//void ButtonInit();
 bool CheckButtonPress();
-void ButtonIntInit();
+void ButtonInit();
 GPIO_PinState HAL_GPIO_ReadPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
 void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init);
 

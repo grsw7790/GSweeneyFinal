@@ -9,59 +9,69 @@
 
 void move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t color, uint8_t col) // we have to call 2d array differently
 {
-    for(int i = COL_INDICIES; i > TOP; i--)
+    for(int i = NUM_ROW - 1; i >= TOP; i--)
     {
         if(board[i][col] == ZERO)
         {
             board[i][col] = color;
             if(i == TOP)
                 col_full[col] = FULL;
+            
+            board[0][col] = ZERO;
+            col = 3;
+
+            if(color == RED)
+                board[0][col] = YELLOW; 
+            else 
+                board[0][col] = RED;
+            i = 0;
         }
-    }
+    }   
     displayBoard(board);
 }
 
-bool check_win(uint8_t board[][NUM_COL], uint8_t color)
+bool check_win(uint8_t board[][NUM_COL], uint8_t color)// i=x j=y
 {
     // Check Horizontal
-    for(int i = ZERO; i < COL_INDICIES-FOR_ADJ; i++)
+    for(int i = ZERO; i <= ROW_INDICIES-FOR_ADJ; i++) 
     {
-        for(int j = ZERO; j < ROW_INDICIES; j++)
+        for(int j = ONE; j <= COL_INDICIES; j++)
         {
-            if(board[i][j] == color && board[i][j+1] == color && board[i][j+2] == color && board[i][j+3] == color) // 4 in a row cond
+            if(board[j][i] == color && board[j][i+1] == color && board[j][i+2] == color && board[j][i+3] == color) // 4 in a row cond
                 return true;
         }
     }
 
     // Check Verticle
-    for(int i = ZERO; i < ROW_INDICIES; i++)
+    for(int i = ZERO; i <= ROW_INDICIES; i++)
     {
-        for(int j = ZERO; j < COL_INDICIES-FOR_ADJ; j++)
+        for(int j = ONE; j <= COL_INDICIES-FOR_ADJ; j++)
         {
-            if(board[i][j] == color && board[i+1][j] == color && board[i+2][j] == color && board[i+3][j] == color)
+            if((board[j][i] == color) && (board[j+1][i] == color) && (board[j+2][i] == color) && (board[j+3][i] == color))
                 return true;
         }
     }
 
     // Check Diagonal Ascending
-    for(int i = FOR_ADJ; i < COL_INDICIES; i++)
+    for(int i = ZERO; i <= ROW_INDICIES - FOR_ADJ; i++)
     {
-        for(int j = ZERO; j < ROW_INDICIES-FOR_ADJ; j++)
+        for(int j = FOR_ADJ; j <= COL_INDICIES; j++)
         {
-            if(board[i][j] == color && board[i-1][j+1] == color && board[i-2][j+2] == color && board[i-3][j+3] == color)
+            if((board[j][i] == color) && (board[j-1][i+1] == color) && (board[j-2][i+2] == color) && (board[j-3][i+3] == color))
                 return true;
         }
     }
 
     // Check Diagonal Descending
-    for(int i = FOR_ADJ; i < COL_INDICIES-FOR_ADJ; i++)
+    for(int i = ZERO; i <= COL_INDICIES - FOR_ADJ; i++)
     {
-        for(int j = FOR_ADJ; j < ROW_INDICIES; j++)
+        for(int j = ZERO; j <= ROW_INDICIES - FOR_ADJ; j++)
         {
-            if(board[i][j] == color && board[i-1][j-1] == color && board[i-2][j-2] == color && board[i-3][j-3] == color)
+            if((board[j][i] == color) && (board[j+1][i+1] == color) && (board[j+2][i+2] == color) && (board[j+3][i+3] == color))
                 return true;          
         }
     }
+    return false;
 }
 
 bool check_valid_move(uint8_t col_full[NUM_COL], uint8_t col)

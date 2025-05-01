@@ -59,33 +59,43 @@ void startHelper()
 
 void displayStart()
 {
-    uint16_t top_left[2] = {ZERO, ZERO};
-    uint16_t bot_right[2] = {LCD_PIXEL_WIDTH, HALF_HEIGHT};
+    uint16_t top_left1[2] = {ZERO, ZERO};
+    uint16_t bot_right1[2] = {LCD_PIXEL_WIDTH, HALF_HEIGHT};
+
+    uint16_t top_left2[2] = {ZERO, HALF_HEIGHT};
+    uint16_t bot_right2[2] = {LCD_PIXEL_WIDTH, LCD_PIXEL_HEIGHT};
 
     // split top and bottom half visually 
-    LCD_Clear(ZERO, LCD_COLOR_GREEN);
-    LCD_draw_rect(top_left, bot_right, LCD_COLOR_MAGENTA);
+    LCD_draw_rect(top_left2, bot_right2, LCD_COLOR_GREEN);
+    LCD_draw_rect(top_left1, bot_right1, LCD_COLOR_MAGENTA);
 
     // player choices
     startHelper();
 }
 
-void endHelper(char word[], uint16_t color) // this is expandable
+void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins) // this is expandable
 {
     LCD_SetTextColor(color);
 	LCD_SetFont(&Font16x24);
 
     // win or tie
-	LCD_DisplayChar(90,140, word[0]);
-	LCD_DisplayChar(105,140, word[1]);
-	LCD_DisplayChar(120,140, word[2]);
-	LCD_DisplayChar(135,140, word[3]);
-	LCD_DisplayChar(150,140, word[4]);
+	LCD_DisplayChar(90,100, word[0]);
+	LCD_DisplayChar(105,100, word[1]);
+	LCD_DisplayChar(120,100, word[2]);
+	LCD_DisplayChar(135,100, word[3]);
+	LCD_DisplayChar(150,100, word[4]);
+
+    LCD_DisplayChar(90,130, 'R');
+	LCD_DisplayChar(90,155, 'Y');
+	LCD_DisplayChar(105,130, ':');
+	LCD_DisplayChar(105,155, ':');
+	LCD_DisplayChar(120,130, ((char)r_wins + ASCII_CONST));
+    LCD_DisplayChar(120,155, ((char)y_wins + ASCII_CONST));
 
     // we can do num wins and time here as well.
 }
 
-void displayEnd(uint8_t rwywt)
+void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins)
 {
     char win[5] = {'W','I','N','S','!'};
     char tie[5] = {'T','I','E','D','!'};
@@ -94,15 +104,15 @@ void displayEnd(uint8_t rwywt)
     {
         case RED_WIN:
             LCD_Clear(ZERO, LCD_COLOR_RED);
-            endHelper(win, LCD_COLOR_WHITE);
+            endHelper(win, LCD_COLOR_WHITE, r_wins, y_wins);
             break;
         case YELLOW_WIN:
             LCD_Clear(ZERO, LCD_COLOR_YELLOW);
-            endHelper(win, LCD_COLOR_BLACK);
+            endHelper(win, LCD_COLOR_BLACK, r_wins, y_wins);
             break;
         case TIE:
             LCD_Clear(ZERO, LCD_COLOR_WHITE);
-            endHelper(tie, LCD_COLOR_BLACK);
+            endHelper(tie, LCD_COLOR_BLACK, r_wins, y_wins);
             break;
         
         default:

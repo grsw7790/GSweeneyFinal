@@ -9,7 +9,7 @@
 bool CheckButtonPress()
 {return HAL_GPIO_ReadPin(GPIOA, BUTTON_PIN_NUM);}
 
-void ButtonIntInit()
+void ButtonInit()
 {
 	GPIO_InitTypeDef button;
 	button.Pin = BUTTON_PIN_NUM;
@@ -17,5 +17,5 @@ void ButtonIntInit()
 	button.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	button.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOA, &button);
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	//HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }

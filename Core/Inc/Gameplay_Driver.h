@@ -15,6 +15,7 @@
 
 // gameplay states
 #define GAME_START      0
+#define RESET           1
 #define ONE_PLAYER      6
 #define TWO_PLAYER      7         
 #define R_MOVE          3   

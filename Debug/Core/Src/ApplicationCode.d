@@ -36,7 +36,7 @@ Core/Src/ApplicationCode.o: ../Core/Src/ApplicationCode.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Core/Inc/ili9341.h ../Core/Inc/fonts.h ../Core/Inc/stmpe811.h \
  ../Core/Inc/Button_Driver.h ../Core/Inc/InterruptControl.h \
- ../Core/Inc/RNG_Driver.h ../Core/Inc/Gameplay_Driver.h
+ ../Core/Inc/Gameplay_Driver.h
 ../Core/Inc/ApplicationCode.h:
 ../Core/Inc/Scheduler.h:
 ../Core/Inc/Graphics_Driver.h:
@@ -79,5 +79,4 @@ Core/Src/ApplicationCode.o: ../Core/Src/ApplicationCode.c \
 ../Core/Inc/stmpe811.h:
 ../Core/Inc/Button_Driver.h:
 ../Core/Inc/InterruptControl.h:
-../Core/Inc/RNG_Driver.h:
 ../Core/Inc/Gameplay_Driver.h:

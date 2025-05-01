@@ -14,14 +14,15 @@
 #define NUM_ROW         7               // because the top I will count as a row to display the piece-to-be-dropped
 #define NUM_COL         7
 #define ROW_INDICIES    (NUM_COL - 1)   
-#define COL_INDICIES    (NUM_ROW - 2) // omit above the board
+#define COL_INDICIES    (NUM_ROW - 1) // omit above the board
 #define RED             1
 #define YELLOW          2
-#define WHITE           0
 #define ZERO            0
+#define ONE             1
 #define DISP_ADJ        1
 #define BOARD_WIDTH     (LCD_PIXEL_WIDTH - 2)
 #define BOARD_HIGH      BOARD_WIDTH
+#define ASCII_CONST     48
 
 #define DISP_MULT       34  // got by 240/7 --> top of the board at 238 pixels
 #define DISP_ADD        (DISP_MULT / 2)  
@@ -35,7 +36,7 @@ void displayBoard(uint8_t board[][NUM_COL]);
 void displayPiece(uint8_t row, uint8_t col, uint16_t color);
 void startHelper();
 void displayStart();
-void endHelper(char word[], uint16_t color);
-void displayEnd(uint8_t rwywt); // red win yellow win tie (which one)
+void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins);
+void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins); // red win yellow win tie (which one)
  
 #endif /* INC_GRAPHICS_DRIVER_H_ */

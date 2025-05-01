@@ -18,10 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "ApplicationCode.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ApplicationCode.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,33 +77,39 @@ static void MX_I2C3_Init(void);
   */
 int main(void)
 {
-  uint8_t board[NUM_ROW][NUM_COL] = { //init board like this bc red will always go first
-    {0,0,0,RED,0,0,0},
-    {0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0},
-  };
 
   /*
     NOTES 4/29/25 --> 10:41PM
       - find a nice way to, at the end of each move, reset the curr_col and display board (prob can j do a reset func in grap_drive)
       - rn thinking top row reset and reset curr col to correspond with reset row... kinda jank but I think is ok 
+      - maybe we can do it in the AppMove functions respectively -- I think definitely, we can set curr col in this as well - didnt do this, just did it jank
       
     NOTES 4/30/25 -->
+      - gotta figure out how to not get several interrupts on one press
+      - above solved. have a fully working scoreboard and 2player mode --> 9:22PM
+      - trying to get RNG to work... might move on to timer in a little bit
   */
+  uint8_t board[NUM_ROW][NUM_COL] = { 
+  {0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0},
+  };
 
-  static volatile uint8_t state = GAME_START;
   uint8_t players;
-  uint32_t touch = 0;
+  uint8_t state = GAME_START;
+  uint32_t rwins = 0;
+  uint32_t ywins = 0;
+  STMPE811_TouchData touch;
   uint8_t curr_col = 3; // current pos of piece to be dropped
   uint8_t col_full[NUM_COL] = {0,0,0,0,0,0,0};
   uint8_t temp = 0;     // general temp to use
-
+  uint32_t rand;
+  
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -131,106 +137,185 @@ int main(void)
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
   ApplicationInit(); // Initializes the LCD functionality
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
-  while(state != GAME_OVER)
+  HAL_Delay(50);
+  ButtonInit();
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
+  while(true){
+  if(state == GAME_START)
   {
-    displayStart();
+    // reset board
+    for(uint8_t i = ZERO; i < NUM_COL; i++)
+    {
+      col_full[i] = 0;
+      for(uint8_t j = ZERO; j < NUM_ROW; j++)
+        {board[i][j] = 0;}
+    }
+    board[ZERO][3] = RED;
+
+    displayStart();  
     
-    while((touch = AppLCDpoll()) == ZERO){} // poll until press
-    
-    if((touch | TOUCH_Y) >= HALF_HEIGHT)
-      players = TWO_PLAYER;
-    else
+    while((touch.x == ZERO) && (touch.y == ZERO))
+      {touch = AppLCDpoll();}
+  
+    if(touch.y >= HALF_HEIGHT) // this is weird that it works... but it does so im not messing with it
       players = ONE_PLAYER;
-    
+    else
+      players = TWO_PLAYER;
+
     state = R_MOVE; // enter next state after touch
-    touch = ZERO; // reset 
-    AppDispBoard();
-    
-    while(state == R_MOVE)////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    AppDispBoard(board);
+  }
+  
+  if(state == R_MOVE)////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  {
+    if((getScheduledEvents() & DROP_EVENT) == DROP_EVENT) // this is set by our button interrupt to drop the piece
+    {
+      removeSchedulerEvent(DROP_EVENT);
+      if(check_valid_move(col_full, curr_col))
+      {
+        AppRedMove(col_full, board, curr_col, state);
+        curr_col = 3;
+        temp = 0;
+        for(uint8_t i = 0; i < NUM_COL; i++)
+          {temp+=col_full[i];}
+
+        if((check_win(board, RED) == true) || (temp == NUM_COL))
+          state = GAME_OVER;
+        else
+          state = Y_MOVE;
+      }
+    }
+
+    if(CheckButtonPress() == BUTTON_PRESSED)
+    {
+      addSchedulerEvent(DROP_EVENT);
+      HAL_Delay(200);
+    }
+
+    touch = AppLCDpoll();
+    if((touch.x != ZERO) || (touch.y != ZERO))
+    {
+      if((touch.x > HALF_WIDTH) && (curr_col < ROW_INDICIES)) // make sure we dont go off board
+      {
+        temp = curr_col;
+        curr_col += 1;
+        board[ZERO][temp] = ZERO;
+        board[ZERO][curr_col] = RED;
+        AppDispBoard(board);
+        HAL_Delay(50);
+      }
+      else if((touch.x < HALF_WIDTH) && (curr_col > ZERO))
+      {
+        temp = curr_col;
+        curr_col -= 1;
+        board[ZERO][temp] = ZERO;
+        board[ZERO][curr_col] = RED;
+        AppDispBoard(board);
+        HAL_Delay(50);
+      }
+      else
+        AppDispBoard(board);
+        
+    }
+  }
+
+  if(state == Y_MOVE)/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  {
+    if(players == ONE_PLAYER)
+    {
+      HAL_RNG_GenerateRandomNumber(&hrng, &rand); 
+      rand = HAL_RNG_ReadLastRandomNumber(&hrng);
+      HAL_Delay(500); 
+      rand = rand % 7;
+
+      if(check_valid_move(col_full, (uint8_t)rand))
+      {
+        AppYellowMove(col_full, board, rand, state);
+        curr_col = 3;
+        temp = 0;
+        for(uint8_t i = 0; i < NUM_COL; i++)
+          {temp+=col_full[i];}
+
+        if((check_win(board, YELLOW) == true) || (temp == NUM_COL))
+		      state = GAME_OVER;
+	      else
+		      state = R_MOVE;
+        
+      }
+    }
+    else
     {
       if((getScheduledEvents() & DROP_EVENT) == DROP_EVENT) // this is set by our button interrupt to drop the piece
       {
         removeSchedulerEvent(DROP_EVENT);
         if(check_valid_move(col_full, curr_col))
         {
-          AppRedMove(col_full, board, curr_col);
-          state = Y_MOVE;
-          break;
+          AppYellowMove(col_full, board, curr_col, state);
+          curr_col = 3;
+          temp = 0;
+          for(uint8_t i = 0; i < NUM_COL; i++)
+            {temp+=col_full[i];}
+
+          if((check_win(board, YELLOW) == true) || (temp == NUM_COL))
+		        state = GAME_OVER;
+	        else
+		        state = R_MOVE;
         }
       }
       
-      if(touch = AppLCDpoll() != ZERO)
+      if(CheckButtonPress() == BUTTON_PRESSED)
       {
-        if((touch|TOUCH_X >= HALF_WIDTH) && (curr_col < ROW_INDICIES)) // make sure we dont go off board
+        addSchedulerEvent(DROP_EVENT);
+        HAL_Delay(200);
+      }
+
+      touch = AppLCDpoll();
+      if((touch.x != ZERO) || (touch.y != ZERO))
+      {
+        if((touch.x >= HALF_WIDTH) && (curr_col < ROW_INDICIES)) // make sure we dont go off board
         {
           temp = curr_col;
           curr_col += 1;
           board[ZERO][temp] = ZERO;
-          board[ZERO][curr_col] = RED;
-          AppDispBoard();
+          board[ZERO][curr_col] = YELLOW;
+          AppDispBoard(board);
         }
-        else if((touch|TOUCH_X < HALF_WIDTH) && (curr_col > ZERO))
+        else if((touch.x < HALF_WIDTH) && (curr_col > ZERO))
         {
           temp = curr_col;
           curr_col -= 1;
           board[ZERO][temp] = ZERO;
-          board[ZERO][curr_col] = RED;
-          AppDispBoard();
+          board[ZERO][curr_col] = YELLOW;
+          AppDispBoard(board);
         }
         else
-          AppDispBoard();
-        
-      }
-    }
-
-    while(state == Y_MOVE)
-    {
-      if(players == ONE_PLAYER)
-      {
-        // RNG STUFF
-      }
-      else
-      {
-        if((getScheduledEvents() & DROP_EVENT) == DROP_EVENT) // this is set by our button interrupt to drop the piece
-        {
-          removeSchedulerEvent(DROP_EVENT);
-          if(check_valid_move(col_full, curr_col))
-          {
-            AppYellowMove(col_full, board, curr_col);
-            state = Y_MOVE;
-            break;
-          }
-        }
-        
-        if(touch = AppLCDpoll() != ZERO)
-        {
-          if((touch|TOUCH_X >= HALF_WIDTH) && (curr_col < ROW_INDICIES)) // make sure we dont go off board
-          {
-            temp = curr_col;
-            curr_col += 1;
-            board[ZERO][temp] = ZERO;
-            board[ZERO][curr_col] = RED;
-            AppDispBoard();
-          }
-          else if((touch|TOUCH_X < HALF_WIDTH) && (curr_col > ZERO))
-          {
-            temp = curr_col;
-            curr_col -= 1;
-            board[ZERO][temp] = ZERO;
-            board[ZERO][curr_col] = RED;
-            AppDispBoard();
-          }
-          else
-            AppDispBoard();
-          
-        } 
-      }
+          AppDispBoard(board); 
+      } 
     }
   }
-
   
+  if(state == GAME_OVER)
+  {
+    if(check_win(board, RED))
+    {
+      rwins++;
+      displayEnd(RED_WIN, rwins, ywins);
+    }
+    else if(check_win(board, YELLOW))
+    {
+      ywins++;
+      displayEnd(YELLOW_WIN, rwins, ywins); 
+    }
+    else
+      displayEnd(TIE, rwins, ywins);
+    
+    while((touch.x == ZERO) && (touch.y == ZERO))
+      {touch = AppLCDpoll();}
+    state = GAME_START;
+  }
+}
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -238,24 +323,24 @@ int main(void)
   //displayEnd(RED_WIN);
   //displayEnd(YELLOW_WIN);
   //displayEnd(TIE);
-  AppDispBoard(board);
+  //AppDispBoard(board);
 
 
-  HAL_Delay(5000);
-  /* USER CODE END 2 */
-#if COMPILE_TOUCH_FUNCTIONS == 1 // This block will need to be deleted
-  //LCD_Touch_Polling_Demo(); // This function Will not return////////////////////////////////////////
-#endif
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+//   HAL_Delay(5000);
+//   /* USER CODE END 2 */
+// #if COMPILE_TOUCH_FUNCTIONS == 1 // This block will need to be deleted
+//   //LCD_Touch_Polling_Demo(); // This function Will not return////////////////////////////////////////
+// #endif
+//   /* Infinite loop */
+//   /* USER CODE BEGIN WHILE */
+//   while (1)
+//   {
+//     /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
-}
+//     /* USER CODE BEGIN 3 */
+//   }
+//   /* USER CODE END 3 */
+
 
 /**
   * @brief System Clock Configuration
@@ -439,7 +524,6 @@ static void MX_LTDC_Init(void)
   */
 static void MX_RNG_Init(void)
 {
-
   /* USER CODE BEGIN RNG_Init 0 */
 
   /* USER CODE END RNG_Init 0 */

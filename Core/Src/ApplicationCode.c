@@ -36,40 +36,24 @@ void ApplicationInit(void)
 void AppDispBoard(uint8_t board[][NUM_COL])
 	{displayBoard(board);}
 
-void AppRedMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col)
-{
-	move(col_full, board, RED, col);
-	//if(check_win(board, RED) == 1)
-	// {
-	// 		state = GAME_OVER;
-	//		winner = RED;
-	// }
-	//else
-		//state = Y_MOVE;
-}
+void AppRedMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col, uint8_t state)
+	{move(col_full, board, RED, col);}
 
-void AppYellowMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col)
-{
-	move(col_full, board, YELLOW, col);
-	//if(check_win(board, YELLOW) == 1)
-	// {
-	// 		state = GAME_OVER;
-	//		winner = YELLOW;
-	// }
-	//else
-		//state = R_MOVE;
-}
+void AppYellowMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col, uint8_t state)
+	{move(col_full, board, YELLOW, col);}
 
-uint32_t AppLCDpoll()
+STMPE811_TouchData AppLCDpoll()
 {
 	/* If touch pressed */
 	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) 
-	{
-		uint32_t touch = (uint16_t)(StaticTouchData.x << 16) + (uint16_t)(StaticTouchData.y);
-		return touch;
-	} 
+		return StaticTouchData; 
 	else
-		return 0; // realistically we are never going to touch 0,0 so this shouldnt cause any issues
+	{
+		StaticTouchData.x = ZERO;
+		StaticTouchData.y = ZERO;
+		return StaticTouchData;
+	}
+		 
 }
 
 void LCD_Visual_Demo(void)
@@ -96,12 +80,20 @@ void LCD_Touch_Polling_Demo(void)
 }
 #endif // COMPILE_TOUCH_FUNCTIONS
 
-void EXTI0_IRQHandler()
-{
-	IRQ_dis(EXTI0_IRQ_NUMBER);
-	// if(check_valid_move()) // col_ful array and curr_col var as args
-	// 	addSchedulerEvent(DROP_EVENT); // event should make logic pretty simple to avoid invalid moves
-	IRQ_clr_PR(EXTI0_IRQ_NUMBER);
-	IRQ_clr_EXTI(EXTI0_IRQ_NUMBER);
-	IRQ_en(EXTI0_IRQ_NUMBER);
-}
+// void endis_NVIC_Int(uint8_t irq_num, uint8_t endis)
+// {
+// 	if(endis == ENABLE)
+// 		IRQ_en(irq_num);
+// 	if(endis == DISABLE)
+// 		IRQ_dis(irq_num);
+// }
+
+// //interrupt handler here
+// void EXTI0_IRQHandler()
+// {
+// 	endis_NVIC_Int(EXTI0_IRQ_NUMBER, DISABLE);
+// 	addSchedulerEvent(DROP_EVENT);
+// 	IRQ_clr_PR(EXTI0_IRQ_NUMBER);
+// 	IRQ_clr_EXTI(EXTI0_IRQ_NUMBER);
+// 	endis_NVIC_Int(EXTI0_IRQ_NUMBER, ENABLE);
+// }
