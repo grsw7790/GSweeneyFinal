@@ -107,7 +107,8 @@ int main(void)
   uint8_t curr_col = 3; // current pos of piece to be dropped
   uint8_t col_full[NUM_COL] = {0,0,0,0,0,0,0};
   uint8_t temp = 0;     // general temp to use
-  uint32_t rand;
+  uint8_t ai_move;
+  uint32_t time;
   
   /* USER CODE BEGIN 1 */
   /* USER CODE END 1 */
@@ -144,6 +145,7 @@ int main(void)
   while(true){
   if(state == GAME_START)
   {
+    HAL_GetTick();
     // reset board
     for(uint8_t i = ZERO; i < NUM_COL; i++)
     {
@@ -174,7 +176,7 @@ int main(void)
       removeSchedulerEvent(DROP_EVENT);
       if(check_valid_move(col_full, curr_col))
       {
-        AppRedMove(col_full, board, curr_col, state);
+        AppRedMove(col_full, board, curr_col);
         curr_col = 3;
         temp = 0;
         for(uint8_t i = 0; i < NUM_COL; i++)
@@ -224,14 +226,11 @@ int main(void)
   {
     if(players == ONE_PLAYER)
     {
-      HAL_RNG_GenerateRandomNumber(&hrng, &rand); 
-      rand = HAL_RNG_ReadLastRandomNumber(&hrng);
-      HAL_Delay(500); 
-      rand = rand % 7;
+      ai_move = App_AI_Move(col_full, board);
 
-      if(check_valid_move(col_full, (uint8_t)rand))
+      if(check_valid_move(col_full, ai_move))
       {
-        AppYellowMove(col_full, board, rand, state);
+        AppYellowMove(col_full, board, ai_move);
         curr_col = 3;
         temp = 0;
         for(uint8_t i = 0; i < NUM_COL; i++)
@@ -251,7 +250,7 @@ int main(void)
         removeSchedulerEvent(DROP_EVENT);
         if(check_valid_move(col_full, curr_col))
         {
-          AppYellowMove(col_full, board, curr_col, state);
+          AppYellowMove(col_full, board, curr_col);
           curr_col = 3;
           temp = 0;
           for(uint8_t i = 0; i < NUM_COL; i++)
@@ -297,18 +296,19 @@ int main(void)
   
   if(state == GAME_OVER)
   {
+    time = HAL_GetTick();
     if(check_win(board, RED))
     {
       rwins++;
-      displayEnd(RED_WIN, rwins, ywins);
+      displayEnd(RED_WIN, rwins, ywins, time);
     }
     else if(check_win(board, YELLOW))
     {
       ywins++;
-      displayEnd(YELLOW_WIN, rwins, ywins); 
+      displayEnd(YELLOW_WIN, rwins, ywins, time); 
     }
     else
-      displayEnd(TIE, rwins, ywins);
+      displayEnd(TIE, rwins, ywins, time);
     
     while((touch.x == ZERO) && (touch.y == ZERO))
       {touch = AppLCDpoll();}
@@ -536,6 +536,8 @@ static void MX_RNG_Init(void)
   {
     Error_Handler();
   }
+  else
+    HAL_RNG_Init(&hrng);
   /* USER CODE BEGIN RNG_Init 2 */
 
   /* USER CODE END RNG_Init 2 */

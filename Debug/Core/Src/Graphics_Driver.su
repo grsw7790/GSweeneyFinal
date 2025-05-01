@@ -3,4 +3,4 @@
 ../Core/Src/Graphics_Driver.c:38:6:startHelper	16	static
 ../Core/Src/Graphics_Driver.c:60:6:displayStart	24	static
 ../Core/Src/Graphics_Driver.c:76:6:endHelper	24	static
-../Core/Src/Graphics_Driver.c:98:6:displayEnd	40	static
+../Core/Src/Graphics_Driver.c:106:6:displayEnd	48	static

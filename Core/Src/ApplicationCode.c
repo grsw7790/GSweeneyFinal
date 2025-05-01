@@ -36,11 +36,85 @@ void ApplicationInit(void)
 void AppDispBoard(uint8_t board[][NUM_COL])
 	{displayBoard(board);}
 
-void AppRedMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col, uint8_t state)
+void AppRedMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col)
 	{move(col_full, board, RED, col);}
 
-void AppYellowMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col, uint8_t state)
+void AppYellowMove(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL], uint8_t col)
 	{move(col_full, board, YELLOW, col);}
+
+	uint8_t AI_Helper(uint8_t board[][NUM_COL], uint8_t free[][2], uint8_t index)
+	{
+		uint8_t num_neighbors = 0;
+		uint8_t x = free[index][0];
+		uint8_t y = free[index][1];
+	
+		// Left
+		if (x > 0 && board[y][x - 1] == YELLOW)
+			num_neighbors++;
+	
+		// Right
+		if (x < NUM_COL - 1 && board[y][x + 1] == YELLOW)
+			num_neighbors++;
+	
+		// Below
+		if (y < NUM_ROW - 1 && board[y + 1][x] == YELLOW)
+			num_neighbors++;
+	
+		// Bottom-left
+		if (x > 0 && y < NUM_ROW - 1 && board[y + 1][x - 1] == YELLOW)
+			num_neighbors++;
+	
+		// Bottom-right
+		if (x < NUM_COL - 1 && y < NUM_ROW - 1 && board[y + 1][x + 1] == YELLOW)
+			num_neighbors++;
+	
+		// Top-left
+		if (x > 0 && y > 0 && board[y - 1][x - 1] == YELLOW)
+			num_neighbors++;
+	
+		// Top-right
+		if (x < NUM_COL - 1 && y > 0 && board[y - 1][x + 1] == YELLOW)
+			num_neighbors++;
+	
+		return num_neighbors;
+	}
+	
+
+uint8_t App_AI_Move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL]) // AI move will always be yellow
+{
+	uint8_t free[NUM_COL][2];
+	uint8_t num_free = 0;
+	for(uint8_t i = ZERO; i <= ROW_INDICIES; i++)
+	{
+		for(uint8_t j = COL_INDICIES; j >= ONE; j--)
+		{
+			if(col_full[i])
+				i++;
+			if(board[j][i] == ZERO)
+			{
+				free[num_free][0] = i;
+				free[num_free][1] = j; //store x,y into free moves
+				num_free++; // count num free moves
+				i++; // makes sure we can only see one free per column
+			}
+		}
+	}
+
+	// count neighbors for each free move
+    uint8_t max_neighbors = 0;
+    uint8_t best_index = 0; // this is the best move given P1 plays best move in middle 1st
+    for (uint8_t n = 0; n < num_free; n++)
+    {
+        uint8_t neighbors = AI_Helper(board, free, n);
+        if (neighbors > max_neighbors)
+        {
+            max_neighbors = neighbors;
+            best_index = n;
+        }
+    }
+    uint8_t best_x = free[best_index][0];
+	return best_x;
+}
 
 STMPE811_TouchData AppLCDpoll()
 {

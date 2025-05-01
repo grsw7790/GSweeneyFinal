@@ -73,7 +73,7 @@ void displayStart()
     startHelper();
 }
 
-void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins) // this is expandable
+void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins, uint32_t time) // this is expandable
 {
     LCD_SetTextColor(color);
 	LCD_SetFont(&Font16x24);
@@ -85,6 +85,7 @@ void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins) //
 	LCD_DisplayChar(135,100, word[3]);
 	LCD_DisplayChar(150,100, word[4]);
 
+    // wins
     LCD_DisplayChar(90,130, 'R');
 	LCD_DisplayChar(90,155, 'Y');
 	LCD_DisplayChar(105,130, ':');
@@ -92,10 +93,17 @@ void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins) //
 	LCD_DisplayChar(120,130, ((char)r_wins + ASCII_CONST));
     LCD_DisplayChar(120,155, ((char)y_wins + ASCII_CONST));
 
-    // we can do num wins and time here as well.
+    // time
+    LCD_SetFont(&Font12x12);
+    LCD_DisplayChar(90,190, 'T');
+	LCD_DisplayChar(102,190, 'I');
+	LCD_DisplayChar(110,190, 'M');
+	LCD_DisplayChar(122,190, 'E');
+    LCD_DisplayChar(132,190, ':');
+    LCD_DisplayChar(142,190, ((char)time % 10 + ASCII_CONST));
 }
 
-void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins)
+void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins, uint32_t time)
 {
     char win[5] = {'W','I','N','S','!'};
     char tie[5] = {'T','I','E','D','!'};
@@ -104,15 +112,15 @@ void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins)
     {
         case RED_WIN:
             LCD_Clear(ZERO, LCD_COLOR_RED);
-            endHelper(win, LCD_COLOR_WHITE, r_wins, y_wins);
+            endHelper(win, LCD_COLOR_WHITE, r_wins, y_wins, time);
             break;
         case YELLOW_WIN:
             LCD_Clear(ZERO, LCD_COLOR_YELLOW);
-            endHelper(win, LCD_COLOR_BLACK, r_wins, y_wins);
+            endHelper(win, LCD_COLOR_BLACK, r_wins, y_wins, time);
             break;
         case TIE:
             LCD_Clear(ZERO, LCD_COLOR_WHITE);
-            endHelper(tie, LCD_COLOR_BLACK, r_wins, y_wins);
+            endHelper(tie, LCD_COLOR_BLACK, r_wins, y_wins, time);
             break;
         
         default:

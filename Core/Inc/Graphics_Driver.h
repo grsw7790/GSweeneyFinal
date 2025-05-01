@@ -36,7 +36,7 @@ void displayBoard(uint8_t board[][NUM_COL]);
 void displayPiece(uint8_t row, uint8_t col, uint16_t color);
 void startHelper();
 void displayStart();
-void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins);
-void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins); // red win yellow win tie (which one)
+void endHelper(char word[], uint16_t color, uint32_t r_wins, uint32_t y_wins, uint32_t time);
+void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins, uint32_t time); // red win yellow win tie (which one)
  
 #endif /* INC_GRAPHICS_DRIVER_H_ */
