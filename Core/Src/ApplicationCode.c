@@ -102,7 +102,7 @@ uint8_t App_AI_Move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL]) // AI m
 
 	// count neighbors for each free move
     uint8_t max_neighbors = 0;
-    uint8_t best_index = 2; // making it 2 1st should hopefully lead to more interesting games than 0
+    uint8_t best_index = 3; // this is the best first move, should make game more interesting 
     for (uint8_t n = 0; n < num_free; n++)
     {
         uint8_t neighbors = AI_Helper(board, free, n);

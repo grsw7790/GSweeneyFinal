@@ -81,8 +81,11 @@ int main(void)
     QUICK NOTES:
       -> using polling implementation with scheduler
       -> Single-Player plays against an algorithm that is relatively predictable
+      -> We let the "AI" go first to make game more challenging for player
          but its moves depend on player input
-       
+      -> github link: 
+         https://github.com/grsw7790/GSweeneyFinal
+         -> all code in "master" branch 
   */
   uint8_t board[NUM_ROW][NUM_COL] = { 
   {0,0,0,0,0,0,0},
@@ -136,7 +139,7 @@ int main(void)
       for(uint8_t j = ZERO; j < NUM_ROW; j++)
         {board[i][j] = 0;}
     }
-    board[ZERO][3] = RED;
+    board[ZERO][3] = YELLOW;
 
     displayStart();  
     
@@ -148,7 +151,7 @@ int main(void)
     else
       players = TWO_PLAYER;
 
-    state = R_MOVE; // enter next state after touch
+    state = Y_MOVE; // enter next state after touch
     AppDispBoard(board);
   }
   
@@ -209,6 +212,7 @@ int main(void)
   {
     if(players == ONE_PLAYER)
     {
+      HAL_Delay(200);
       ai_move = App_AI_Move(col_full, board);
 
       if(check_valid_move(col_full, ai_move))
