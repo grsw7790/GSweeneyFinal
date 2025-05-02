@@ -409,7 +409,7 @@ while((touch.x == ZERO) && (touch.y == ZERO))
 This is from my main implementation which contains the larger state machine for my game. Once the while exits the program responds appropriately
 depending on the state it is currently in and where the touch occured. This is the nicest way I found to poll for a touch on the start and end screens. 
 
-### MAIN
+### -- MAIN --
 
 ```C
     if(players == ONE_PLAYER)
