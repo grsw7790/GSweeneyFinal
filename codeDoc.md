@@ -33,7 +33,7 @@ void LCD_draw_rect(uint16_t p1[2], uint16_t p2[2], uint16_t color)
 ```
 This function takes three arguments, two of which are arrays of size [2] that represent (x,y) coordinates on the LCD screen, and a 16 bit integer representing the color 
 of the rectangle. Using these points it determines the bounds of the rectangle and runs through a nested for loop, calling LCD_Draw_Pixel() in order to color the pixel
-specified by the coordinate the orrect color. p1 is used as the top left corner of the rectangle and p2 is used as the bottom right of the rectangle.
+specified by the coordinate the correct color. p1 is used as the top left corner of the rectangle and p2 is used as the bottom right of the rectangle.
 <br> <br>
 The draw board function is essentially the same however it does not take any arguments as the bounds and color for the board are pre-defined.
 
@@ -57,8 +57,8 @@ void displayPiece(uint8_t row, uint8_t col, uint16_t color)
     {LCD_Draw_Circle_Fill((DISP_MULT * row + DISP_ADD + DISP_ADJ) , (82 + (DISP_MULT * col + DISP_ADD)) , RADIUS, color);}
 ```
 This function calls LCD_Draw_Circle_Fill() in order to draw the pieces. It takes three arguments with pretty self explanatory names, one for the row
-in which to display the piece (y-coordinate), one for the column in which to display the piece (x-coordinate), and one for the color. The fucntion does the 
-calculations in order to find the correct coordinates on the LCD screen from coordinates relatice to the spaces on the board. 82 is the top y-pixel coordinate of 
+in which to display the piece (y-coordinate), one for the column in which to display the piece (x-coordinate), and one for the color. The function does the 
+calculations in order to find the correct coordinates on the LCD screen from coordinates relative to the spaces on the board. 82 is the top y-pixel coordinate of 
 our screen (shouldn't have used a magic number). 
 ##### Important defines:
 ```C
@@ -121,7 +121,7 @@ void displayStart()
     startHelper();
 }
 ```
-This function draws two rectangles calling the aformentioned LCD function and then calls start helper to display the necessary text on the LCD.
+This function draws two rectangles calling the aforementioned LCD function and then calls start helper to display the necessary text on the LCD.
 
 ##### Important defines:
 ```C
@@ -130,9 +130,9 @@ This function draws two rectangles calling the aformentioned LCD function and th
 #define  HALF_HEIGHT              ((uint16_t)(LCD_PIXEL_HEIGHT / 2))
 #define  HALF_WIDTH               ((uint16_t)(LCD_PIXEL_WIDTH / 2))
 ```
-I think ZERO is pretty self explanetory so I left that out... <br>
+I think ZERO is pretty self explanatory so I left that out... <br>
 LCD_PIXEL_WIDTH and LCD_PIXEL_HEIGHT were both provided in the starter code and they are the width and height in pixels of the LCD respectively.
-HALF_HEIGHT and HALF_WIDTH are simple half both the pixel height and width of the LCD. In combination in the displayStart() function they create 
+HALF_HEIGHT and HALF_WIDTH are simply half both the pixel height and width of the LCD. In combination in the displayStart() function they create 
 two distinct halves of the screen for the user to make a choice (one or two player mode).
 
 #### displayEnd()
@@ -165,7 +165,7 @@ void displayEnd(uint8_t rwywt, uint32_t r_wins, uint32_t y_wins, uint32_t time)
 ```
 This function is slightly more involved than displayStart() however it is still quite simple. The arguments in order represent which player won or if the game 
 was a tie, the current count of red wins, the current count of yellow wins, and the time the game took. I used a switch statement in order to determine which color
-won the game or if it was a time and call endHelper accordingly to display the correct information. The macros used are self explanetory and completely arbitrary
+won the game or if it was a time and call endHelper accordingly to display the correct information. The macros used are self explanatory and completely arbitrary
 so it seems unnecessary to explain them.
 
 ### -- GAMEPLAY DRIVER --
@@ -182,7 +182,7 @@ bool check_valid_move(uint8_t col_full[NUM_COL], uint8_t col)
 }
 ```
 This function ensures that a move a player or computer is trying to make is in fact valid by checking the intended column the drop in against
-the array col_full[] that fills with 1's as the columns of the game board fill. The filling of this array happens in the move function to-be-exlpained below.  
+the array col_full[] that fills with 1's as the columns of the game board fill. The filling of this array happens in the move function to-be-explained below.  
 The macro FULL just = 1. It will return true if the move is valid and false if not.
 
 #### move()
@@ -229,7 +229,7 @@ bool check_win(uint8_t board[][NUM_COL], uint8_t color)// i=x j=y
         }
     }
 
-    // Check Verticle
+    // Check Vertical
     for(int i = ZERO; i <= ROW_INDICIES; i++)
     {
         for(int j = ONE; j <= COL_INDICIES-FOR_ADJ; j++)
@@ -262,8 +262,8 @@ bool check_win(uint8_t board[][NUM_COL], uint8_t color)// i=x j=y
 }
 ```
 This function iterates through nested for loops to check different win conditions. It takes a color argument as we only want to check win after
-of the color that just took it's turn. There may be a way to reduce the number of for loops here however it runs as fast as needed and keeping the 
-for loops seperate helps stay organized and know which win conditions you are checking when.
+of the color that just took its turn. There may be a way to reduce the number of for loops here however it runs as fast as needed and keeping the 
+for loops separate helps stay organized and know which win conditions you are checking when.
 
 ##### Important defines:
 ```C
@@ -280,15 +280,15 @@ Button driver is essentially the same as lab 5 however I removed the interrupt f
 as I was already polling for LCD touches it felt pretty natural.
 
 ### -- SCHEDULER --
-Our scheduler is also largely the same just with different events. I only found the need to have one event for this project although in hidsight it may have made
-my life easier to use more events to eliminate some repeatative code or something of this sort. 
+Our scheduler is also largely the same just with different events. I only found the need to have one event for this project although in hindsight it may have made
+my life easier to use more events to eliminate some repetitive code or something of this sort. 
 ```C
 #define	DROP_EVENT		(1 << 0)
 ```
 This is the only event I used for the project to prompt the program to drop a piece.
 
 ### -- APPLICATION CODE --
-I wrote a few new function in application code, only three of them being worth explaining fully.
+I wrote a few new functions in application code, only three of them being worth explaining fully.
 
 ```C
 void AppDispBoard(uint8_t board[][NUM_COL]); 
@@ -299,7 +299,7 @@ uint8_t App_AI_Move(uint8_t col_full[NUM_COL], uint8_t board[][NUM_COL]);
 STMPE811_TouchData AppLCDpoll();
 ```
 ####  AppDispBoard(), AppRedMove(), AppYellowMove()
-These three functions simply call other function from lower in the hierarchy, AppRedMove() and AppYellowMove() have the colors pre-defined as you 
+These three functions simply call other functions from lower in the hierarchy, AppRedMove() and AppYellowMove() have the colors predefined as you 
 might guess.
 
 #### AI_Helper()
@@ -472,7 +472,7 @@ if(state == GAME_START)
     AppDispBoard(board);
   }
 ```
-This state implements the reset after touch in the game over state and the recieving of user input on the start screen and responds correctly
+This state implements the reset after touch in the game over state and the receiving of user input on the start screen and responds correctly
 to the input by setting the number of players.
 
 
